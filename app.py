@@ -2,7 +2,10 @@ import streamlit as st
 from media_plan import generate_media_plan
 from blueprint import generate_blueprint
 
-st.set_page_config(page_title="Ameen AI Suite", layout="wide")
+st.set_page_config(
+    page_title="Ameen AI Suite",
+    layout="wide"
+)
 
 st.title("🚀 Ameen AI Suite")
 st.subheader("AI Growth Reports Generator")
@@ -22,6 +25,11 @@ with col2:
 
 st.divider()
 
+if st.session_state.service == "media":
+    st.info("📈 You are generating an AI Media Plan")
+else:
+    st.info("🚀 You are generating a Business Growth Blueprint")
+
 store_name = st.text_input("Business / Store Name")
 store_url = st.text_input("Website / Store URL")
 niche = st.text_input("Business Niche")
@@ -32,49 +40,69 @@ country = st.selectbox(
     ["Saudi Arabia", "UAE", "Qatar", "Kuwait"]
 )
 
-business_type = st.selectbox(
-    "Business Type",
-    ["E-commerce Store", "Service Business", "Restaurant", "Clinic", "Real Estate", "Other"]
-)
+business_type = None
+main_goal = None
+current_problem = None
 
-main_goal = st.selectbox(
-    "Main Goal",
-    [
-        "Increase Sales",
-        "Improve Ads Performance",
-        "Improve Website Conversion",
-        "SEO Growth",
-        "Understand Competitors",
-        "Build 90-Day Growth Plan"
-    ]
-)
+if st.session_state.service == "blueprint":
+    business_type = st.selectbox(
+        "Business Type",
+        [
+            "E-commerce Store",
+            "Service Business",
+            "Restaurant",
+            "Clinic",
+            "Real Estate",
+            "Other"
+        ]
+    )
 
-current_problem = st.text_area("Current Main Problem")
+    main_goal = st.selectbox(
+        "Main Goal",
+        [
+            "Increase Sales",
+            "Improve Ads Performance",
+            "Improve Website Conversion",
+            "SEO Growth",
+            "Understand Competitors",
+            "Build 90-Day Growth Plan"
+        ]
+    )
+
+    current_problem = st.text_area(
+        "Current Main Problem",
+        placeholder="Example: We get traffic, but sales are still low..."
+    )
 
 generate = st.button("Generate Report", use_container_width=True)
 
 if generate:
     if not store_name or not store_url or not niche or not budget:
         st.error("Please fill all required fields.")
+    elif st.session_state.service == "blueprint" and not current_problem:
+        st.error("Please describe the current main problem.")
     else:
         with st.spinner("Generating report..."):
-
             if st.session_state.service == "media":
                 html_report, markdown_report = generate_media_plan(
-                    store_name, store_url, niche, budget, country
+                    store_name=store_name,
+                    store_url=store_url,
+                    niche=niche,
+                    budget=budget,
+                    country=country
                 )
                 file_name = "media_plan.html"
 
             else:
                 html_report, markdown_report = generate_blueprint(
-                    store_name,
-                    store_url,
-                    niche,
-                    budget,
-                    country,
-                    business_type,
-                    main_goal,
-                    current_problem
+                    store_name=store_name,
+                    store_url=store_url,
+                    niche=niche,
+                    budget=budget,
+                    country=country,
+                    business_type=business_type,
+                    main_goal=main_goal,
+                    current_problem=current_problem
                 )
                 file_name = "business_growth_blueprint.html"
 
@@ -82,8 +110,9 @@ if generate:
         st.markdown(markdown_report)
 
         st.download_button(
-            "Download HTML Presentation",
+            label="Download HTML Presentation",
             data=html_report,
             file_name=file_name,
-            mime="text/html"
+            mime="text/html",
+            use_container_width=True
         )
