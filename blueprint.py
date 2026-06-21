@@ -46,7 +46,17 @@ def generate_blueprint(store_name, store_url, niche, budget, country, business_t
     Use tables where useful.
 
     When the target country is Saudi Arabia, prioritize Snapchat, Google Ads, Instagram and TikTok. Do not recommend Facebook as a primary acquisition channel unless there is a specific reason.
-
+    Very important for the 90-Day Roadmap:
+    - Do not delay ads until the second or third month.
+    - The client should start running controlled ads from day 1.
+    - The roadmap must run in parallel tracks:
+      1. Conversion and website improvements
+      2. Paid ads testing and optimization
+      3. Retargeting
+      4. SEO and content improvements
+    - First 30 days should include launching test campaigns with controlled budget, not waiting.
+    - Month 2 should focus on optimization and scaling winning campaigns.
+    - Month 3 should focus on growth, automation, and expanding profitable channels.
     At the very end of the response, write this machine-readable line exactly:
     FINAL_SCORE: [number from 1 to 10]
 
@@ -55,6 +65,11 @@ def generate_blueprint(store_name, store_url, niche, budget, country, business_t
     - Do not write "التقييم النهائي للنمو هو" anywhere in the report.
     - The FINAL_SCORE line is only for code parsing and must not be part of the client-facing report.
     - The score can include decimals, مثل 6.5 أو 7.2.
+
+     يجب أن تكون خطة 90 يوم واقعية وعملية. 
+    لا تؤخر الإعلانات إلى الشهر الثاني أو الثالث.
+    يجب أن تبدأ الحملات الإعلانية بشكل تجريبي من أول شهر بالتوازي مع تحسين الموقع.
+    يجب أن تعمل التحسينات والإعلانات وإعادة الاستهداف وSEO بالتوازي وليس بشكل متسلسل.
     """
     
     example_user = """
@@ -151,9 +166,9 @@ def generate_blueprint(store_name, store_url, niche, budget, country, business_t
 
     | الفترة | الهدف | الإجراءات |
     |---|---|---|
-    | أول 30 يوم | تحسين التحويل | تعديل صفحات المنتجات، إضافة عناصر الثقة، وضبط العرض. |
-    | من 31 إلى 60 يوم | تحسين الحملات | اختبار الإعلانات، بناء Retargeting، وتحليل النتائج. |
-    | من 61 إلى 90 يوم | التوسع | زيادة الميزانية على الحملات الرابحة وتحسين SEO. |
+    | أول 30 يوم | تحسين التحويل + إطلاق حملات اختبار | تحسين الصفحات الأساسية، إطلاق حملات Snapchat وGoogle بميزانية اختبار، إعداد Retargeting. |
+    | من 31 إلى 60 يوم | تحسين الحملات ورفع النتائج | تحليل الأداء، إيقاف الحملات الضعيفة، تحسين الإعلانات، رفع الميزانية على الحملات الرابحة. |
+    | من 61 إلى 90 يوم | التوسع والنمو | توسيع القنوات الناجحة، تحسين SEO، بناء محتوى، وأتمتة المتابعة مع العملاء. |
 
     ---
 
@@ -213,11 +228,9 @@ def generate_blueprint(store_name, store_url, niche, budget, country, business_t
     )
     final_score = match.group(1) if match else "8"
 
-    report_markdown = re.sub(
-        r"FINAL_SCORE:\s*\d+(?:\.\d+)?",
-        "",
-        report_markdown
-    ).strip()
+    report_markdown = re.sub(r"FINAL_SCORE:\s*\d+(?:\.\d+)?", "", report_markdown)
+    report_markdown = re.sub(r"التقييم النهائي للنمو هو:\s*\d+(?:\.\d+)?", "", report_markdown)
+    report_markdown = report_markdown.strip()
 
     report_html_body = markdown.markdown(
         report_markdown,
@@ -290,7 +303,16 @@ def generate_blueprint(store_name, store_url, niche, budget, country, business_t
     }}
     .content {{
         padding:45px;
+
     }}
+    .footer {
+        margin-top: 50px;
+        padding-top: 25px;
+        border-top: 1px solid rgba(255,255,255,.18);
+        text-align: center;
+        color: rgba(255,255,255,.75);
+        font-size: 14px;
+    }
     </style>
     </head>
     <body>
